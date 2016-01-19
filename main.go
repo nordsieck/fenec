@@ -32,11 +32,22 @@ func main() {
 		case "build":
 			fmt.Println("Building!")
 		case "help":
-			fmt.Println("Helping!")
+			args = args[1:]
+			if len(args) > 0 {
+				txt, ok := help[args[0]]
+				switch {
+				case ok:
+					fmt.Println(txt)
+				default:
+					fmt.Println(help[""])
+				}
+			} else {
+				fmt.Println(help[""])
+			}
 		default:
 			fmt.Println(help[""])
 		}
-		return
+	} else {
+		fmt.Println(help[""])
 	}
-	fmt.Println(help[""])
 }
