@@ -7,6 +7,8 @@ import (
 	"path"
 	"strings"
 	"testing"
+
+	"github.com/nordsieck/defect"
 )
 
 const basicFile = `package foo
@@ -21,53 +23,37 @@ func TestIsWendigo(t *testing.T) {
 	}
 
 	for k, v := range tests {
-		if IsWendigo(k) != v {
-			t.FailNow()
-		}
+		defect.Equal(t, IsWendigo(k), v)
 	}
 }
 
 func TestConvertFile(t *testing.T) {
 	dir, err := ioutil.TempDir("", "")
-	if err != nil {
-		t.Fatal("Unable to create temporary directory")
-	}
+	defect.Equal(t, err, nil, "Unable to create temporary directory")
 
 	defer func() {
-		if err := os.RemoveAll(dir); err != nil {
-			t.Fatal("Unable to clean up temporary directory")
-		}
+		err := os.RemoveAll(dir)
+		defect.Equal(t, err, nil, "Unable to clean up temporary directory")
 	}()
 
 	wPath := path.Join(dir, "foo"+wExt)
 	wFile, err := os.Create(wPath)
-	if err != nil {
-		t.Fatal("Unable to create Wendigo file.")
-	}
-	defer wFile.Close()
-	if _, err = wFile.WriteString(basicFile); err != nil {
-		t.Fatal("Unable to populate Wendigo file.")
-	}
+	defect.Equal(t, err, nil, "Unable to create Wendigo file.")
 
-	if err = ConvertFile(wPath); err != nil {
-		t.Fatal("Error in ConvertFile: ", err)
-	}
+	defer wFile.Close()
+	_, err = wFile.WriteString(basicFile)
+	defect.Equal(t, err, nil, "Unable to populate Wendigo file.")
+
+	err = ConvertFile(wPath)
+	defect.Equal(t, err, nil, "Error in ConvertFile: ", err)
 
 	gFile, err := os.Open(wPath + goExt)
-	if err != nil {
-		t.Fatal("Unable to open Go file.")
-	}
+	defect.Equal(t, err, nil, "Unable to open Go file.")
+
 	buffer := make([]byte, 50)
 	n, err := gFile.Read(buffer)
-	if err != nil {
-		t.Fatal("Unable to read from Go file.")
-	}
-	if string(buffer[:n]) != basicFile {
-		t.Fatalf(`Found bad content.
-Expected: %v
-Got: %v
-`, basicFile, string(buffer[:n]))
-	}
+	defect.Equal(t, err, nil, "Unable to read from Go file.")
+	defect.Equal(t, string(buffer[:n]), basicFile, "Found bad content")
 }
 
 func TestConvert(t *testing.T) {
@@ -76,12 +62,8 @@ func TestConvert(t *testing.T) {
 		in := &bytes.Buffer{}
 
 		err := convert(out, in, buffSize)
-		if err != nil {
-			t.FailNow()
-		}
-		if string(in.Bytes()) != s {
-			t.FailNow()
-		}
+		defect.Equal(t, err, nil)
+		defect.Equal(t, string(in.Bytes()), s)
 	}
 
 	// 1 pass
