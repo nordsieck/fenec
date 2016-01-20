@@ -2,6 +2,7 @@ package build
 
 import (
 	"io"
+	"os"
 	"strings"
 )
 
@@ -12,8 +13,21 @@ const (
 	buffSize = 4 * 1024
 )
 
+// ConvertFile reads in a Wendigo file and creates a corresponding Go file
 func ConvertFile(filePath string) error {
-	return nil
+	wFile, err := os.Open(filePath)
+	if err != nil {
+		return err
+	}
+	defer wFile.Close()
+
+	goFile, err := os.Create(filePath + goExt)
+	if err != nil {
+		return err
+	}
+	defer goFile.Close()
+
+	return Convert(wFile, goFile)
 }
 
 // Convert converts Wendigo source code to Go
