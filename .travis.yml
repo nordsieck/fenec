@@ -2,3 +2,7 @@ language: go
 
 go:
   - tip
+
+install:
+  - go get -t ./...
+  - go run main.go build # prep the ftest directory
