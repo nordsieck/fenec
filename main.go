@@ -2,7 +2,10 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os"
+
+	"github.com/nordsieck/wendigo/build"
 )
 
 var (
@@ -30,7 +33,13 @@ func main() {
 	if len(args) > 0 {
 		switch args[0] {
 		case "build":
-			fmt.Println("Building!")
+			dir, err := os.Getwd()
+			if err != nil {
+				log.Fatal(err)
+			}
+			if err = build.ConvertDir(dir); err != nil {
+				log.Fatal(err)
+			}
 		case "help":
 			args = args[1:]
 			if len(args) > 0 {

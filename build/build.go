@@ -2,6 +2,7 @@ package build
 
 import (
 	"io"
+	"io/ioutil"
 	"os"
 	"path"
 	"strings"
@@ -16,9 +17,8 @@ const (
 
 // ConvertDir converts all Wendigo files in the directory to Go files.
 func ConvertDir(dirPath string) error {
-	return nil
+	return convertDir(dirPath, ioutil.ReadDir, wrap(os.Open), wrap(os.Create))
 }
-
 func convertDir(dirPath string, readDir ReadDirFunc, open, create FileFunc) error {
 	dirs := []string{dirPath}
 
