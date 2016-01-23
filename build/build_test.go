@@ -46,8 +46,8 @@ func TestConvertDir(t *testing.T) {
 	err := convertDir(root, readDir, open, create)
 
 	defect.Equal(t, err, nil)
-	defect.Equal(t, files[path.Join(root, "b"+wExt+goExt)].String(), bFile)
-	defect.Equal(t, files[path.Join(root, "c", "d"+wExt+goExt)].String(), dFile)
+	defect.Equal(t, files[path.Join(root, "b"+wExt+goExt)].String(), header+bFile)
+	defect.Equal(t, files[path.Join(root, "c", "d"+wExt+goExt)].String(), header+dFile)
 }
 
 func TestIsWendigo(t *testing.T) {
@@ -100,7 +100,7 @@ func TestConvertFile(t *testing.T) {
 	err := convertFile(name, o, c)
 
 	defect.Equal(t, err, nil)
-	defect.Equal(t, cf.String(), basicFile)
+	defect.Equal(t, cf.String(), header+basicFile)
 	defect.Equal(t, of.Closed, true)
 	defect.Equal(t, cf.Closed, true)
 	defect.Equal(t, of.Path, name)
@@ -114,7 +114,7 @@ func TestConvert(t *testing.T) {
 		err := convert(out, in, buffSize)
 
 		defect.Equal(t, err, nil)
-		defect.Equal(t, string(in.Bytes()), s)
+		defect.Equal(t, string(in.Bytes()), header+s)
 	}
 
 	fn(4, "foo") // 1 pass
