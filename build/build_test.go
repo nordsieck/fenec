@@ -47,6 +47,7 @@ func TestConvertDir(t *testing.T) {
 
 	defect.Equal(t, err, nil)
 	defect.Equal(t, files[path.Join(root, "b"+wExt+goExt)].String(), bFile)
+	defect.Equal(t, files[path.Join(root, "c", "d"+wExt+goExt)].String(), dFile)
 }
 
 func TestIsWendigo(t *testing.T) {
