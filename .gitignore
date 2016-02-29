@@ -26,5 +26,5 @@ _testmain.go
 # emacs
 *~
 
-# wendigo
-*.w.go
+# fenec
+*.fn.go
