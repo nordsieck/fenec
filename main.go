@@ -5,22 +5,22 @@ import (
 	"log"
 	"os"
 
-	"github.com/nordsieck/wendigo/build"
+	"github.com/nordsieck/fenec/build"
 )
 
 var (
 	help = map[string]string{
-		"": `Wendigo is a tool for compiling Wendigo source code.
+		"": `Fenec is a tool for compiling Fenec source code.
 
 Usage:
 
-	wendigo command [arguments]
+	fenec command [arguments]
 
 The commands are:
 
 	build	compile packages
 
-Use "wendigo help [command]" for more information about a command.
+Use "fenec help [command]" for more information about a command.
 `,
 		"build": `Build compiles the current package and all sub-packages
 recursively.  It has no arguments.`,

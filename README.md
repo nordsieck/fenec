@@ -1,2 +1,2 @@
-# wendigo
-A compile to go language with generics
+# Fenec
+A compile to go language

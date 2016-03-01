@@ -23,19 +23,19 @@ func TestConvertDir(t *testing.T) {
 	root := path.Join("foo", "bar")
 	files := map[string]*FakeFile{
 		path.Join(root, "a"):                 &FakeFile{Buffer: *bytes.NewBufferString("a")},
-		path.Join(root, "b"+wExt):            &FakeFile{Buffer: *bytes.NewBufferString(bFile)},
-		path.Join(root, "b"+wExt+goExt):      &FakeFile{},
-		path.Join(root, "c", "d"+wExt):       &FakeFile{Buffer: *bytes.NewBufferString(dFile)},
-		path.Join(root, "c", "d"+wExt+goExt): &FakeFile{},
+		path.Join(root, "b"+fExt):            &FakeFile{Buffer: *bytes.NewBufferString(bFile)},
+		path.Join(root, "b"+fExt+goExt):      &FakeFile{},
+		path.Join(root, "c", "d"+fExt):       &FakeFile{Buffer: *bytes.NewBufferString(dFile)},
+		path.Join(root, "c", "d"+fExt+goExt): &FakeFile{},
 	}
 	infos := map[string][]os.FileInfo{
 		root: []os.FileInfo{
 			&FileInfo{name: "a", size: 1},
-			&FileInfo{name: "b" + wExt, size: int64(len(bFile))},
+			&FileInfo{name: "b" + fExt, size: int64(len(bFile))},
 			&FileInfo{name: "c", isDir: true},
 		},
 		path.Join(root, "c"): []os.FileInfo{
-			&FileInfo{name: "d" + wExt, size: int64(len(dFile))},
+			&FileInfo{name: "d" + fExt, size: int64(len(dFile))},
 		},
 	}
 
@@ -46,20 +46,20 @@ func TestConvertDir(t *testing.T) {
 	err := convertDir(root, readDir, open, create)
 
 	defect.Equal(t, err, nil)
-	defect.Equal(t, files[path.Join(root, "b"+wExt+goExt)].String(), header+bFile)
-	defect.Equal(t, files[path.Join(root, "c", "d"+wExt+goExt)].String(), header+dFile)
+	defect.Equal(t, files[path.Join(root, "b"+fExt+goExt)].String(), header+bFile)
+	defect.Equal(t, files[path.Join(root, "c", "d"+fExt+goExt)].String(), header+dFile)
 }
 
-func TestIsWendigo(t *testing.T) {
+func TestIsFenec(t *testing.T) {
 	tests := map[string]bool{
 		"foo":                false,
 		"foo" + goExt:        false,
-		"foo" + wExt:         true,
-		"foo" + wExt + goExt: false,
+		"foo" + fExt:         true,
+		"foo" + fExt + goExt: false,
 	}
 
 	for k, v := range tests {
-		defect.Equal(t, IsWendigo(k), v)
+		defect.Equal(t, IsFenec(k), v)
 	}
 }
 
@@ -67,24 +67,24 @@ func TestInDir(t *testing.T) {
 	readDir := func(string) ([]os.FileInfo, error) {
 		return []os.FileInfo{
 			&FileInfo{name: "foo" + goExt, size: 12, isDir: false},
-			&FileInfo{name: "bar" + wExt, size: int64(len(basicFile)), isDir: false},
+			&FileInfo{name: "bar" + fExt, size: int64(len(basicFile)), isDir: false},
 			&FileInfo{name: "baz", size: 0, isDir: true},
-			&FileInfo{name: "quux" + wExt, size: 0, isDir: true},
+			&FileInfo{name: "quux" + fExt, size: 0, isDir: true},
 		}, nil
 	}
 	p := path.Join("foo", "bar", "baz")
 	files, dirs, err := inDir(p, readDir)
 
 	defect.Equal(t, err, nil)
-	defect.DeepEqual(t, files, []string{path.Join(p, "bar"+wExt)})
+	defect.DeepEqual(t, files, []string{path.Join(p, "bar"+fExt)})
 	defect.DeepEqual(t, dirs, []string{
 		path.Join(p, "baz"),
-		path.Join(p, "quux"+wExt),
+		path.Join(p, "quux"+fExt),
 	})
 }
 
 func TestConvertFile(t *testing.T) {
-	name := "/foo/bar/baz" + wExt
+	name := "/foo/bar/baz" + fExt
 	of := FakeFile{}
 	o := func(s string) (io.ReadWriteCloser, error) {
 		of.Path = s
