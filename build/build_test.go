@@ -9,6 +9,7 @@ import (
 	"testing"
 
 	"github.com/nordsieck/defect"
+	"github.com/nordsieck/fenec/testutil"
 )
 
 const basicFile = `package foo
@@ -21,12 +22,12 @@ func TestConvertDir(t *testing.T) {
 `
 
 	root := path.Join("foo", "bar")
-	files := map[string]*FakeFile{
-		path.Join(root, "a"):                 &FakeFile{Buffer: *bytes.NewBufferString("a")},
-		path.Join(root, "b"+fExt):            &FakeFile{Buffer: *bytes.NewBufferString(bFile)},
-		path.Join(root, "b"+fExt+goExt):      &FakeFile{},
-		path.Join(root, "c", "d"+fExt):       &FakeFile{Buffer: *bytes.NewBufferString(dFile)},
-		path.Join(root, "c", "d"+fExt+goExt): &FakeFile{},
+	files := map[string]*testutil.FakeFile{
+		path.Join(root, "a"):                 &testutil.FakeFile{Buffer: *bytes.NewBufferString("a")},
+		path.Join(root, "b"+fExt):            &testutil.FakeFile{Buffer: *bytes.NewBufferString(bFile)},
+		path.Join(root, "b"+fExt+goExt):      &testutil.FakeFile{},
+		path.Join(root, "c", "d"+fExt):       &testutil.FakeFile{Buffer: *bytes.NewBufferString(dFile)},
+		path.Join(root, "c", "d"+fExt+goExt): &testutil.FakeFile{},
 	}
 	infos := map[string][]os.FileInfo{
 		root: []os.FileInfo{
@@ -85,14 +86,14 @@ func TestInDir(t *testing.T) {
 
 func TestConvertFile(t *testing.T) {
 	name := "/foo/bar/baz" + fExt
-	of := FakeFile{}
+	of := testutil.FakeFile{}
 	o := func(s string) (io.ReadWriteCloser, error) {
 		of.Path = s
 		of.WriteString(basicFile)
 		return &of, nil
 	}
 
-	cf := FakeFile{}
+	cf := testutil.FakeFile{}
 	c := func(s string) (io.ReadWriteCloser, error) {
 		cf.Path = s
 		return &cf, nil

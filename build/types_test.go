@@ -1,7 +1,6 @@
 package build
 
 import (
-	"bytes"
 	"os"
 	"time"
 )
@@ -24,15 +23,4 @@ func (f *FileInfo) Mode() os.FileMode {
 		return os.ModeDir
 	}
 	return os.FileMode(0)
-}
-
-type FakeFile struct {
-	Path   string
-	Closed bool
-	bytes.Buffer
-}
-
-func (f *FakeFile) Close() error {
-	f.Closed = true
-	return nil
 }
