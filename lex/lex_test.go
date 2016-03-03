@@ -2,7 +2,7 @@ package lex
 
 import (
 	"bytes"
-	"fmt"
+	"go/token"
 	"testing"
 
 	"github.com/nordsieck/defect"
@@ -10,45 +10,24 @@ import (
 )
 
 func TestLexGo(t *testing.T) {
-	ff := testutil.FakeFile{Buffer: *bytes.NewBufferString(`package foo
-
-const a = 1
-const b = "foo"
-
-type C int
-
-// d
-type D struct {
-	e string
-}
-func (d *D) String() string { return d.e }
-
-type Stringer interface {
-	String() string
-}
-
-/* ensure the interface is implemented */
-var _ Stringer = D{}
-
-func t(b bool) bool { return true }
-`)}
-	_, err := Lex("foo", &ff)
-	defect.Equal(t, err, nil)
-}
-
-func TestLexError(t *testing.T) {
-	ff := testutil.FakeFile{Buffer: *bytes.NewBufferString(`"`)}
-	_, err := Lex("foo", &ff)
-	defect.DeepEqual(t, err, fmt.Errorf(ErrFmt, "foo", 1, 1, "string literal not terminated"))
-}
-
-func TestLexWendigo(t *testing.T) {
-	ff := testutil.FakeFile{Buffer: *bytes.NewBufferString(`package foo
+	ff := &testutil.FakeFile{Buffer: *bytes.NewBufferString(`package foo
 
 type B int
 
-func a<t>(j t) t { return j }
+func a(j t) t { return j }
 `)}
-	_, err := Lex("foo", &ff)
-	defect.Equal(t, err, nil)
+	l := Lexer{}
+	l.Init("foo", ff)
+
+	for _, expected := range []token.Token{
+		token.PACKAGE, token.IDENT, token.SEMICOLON,
+		token.TYPE, token.IDENT, token.IDENT, token.SEMICOLON,
+		token.FUNC, token.IDENT, token.LPAREN, token.IDENT,
+		token.IDENT, token.RPAREN, token.IDENT, token.LBRACE,
+		token.RETURN, token.IDENT, token.RBRACE, token.SEMICOLON,
+		token.EOF,
+	} {
+		v := l.Lex(&yySymType{})
+		defect.Equal(t, token.Token(v), expected)
+	}
 }
