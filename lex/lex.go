@@ -8,39 +8,34 @@ import (
 	"io/ioutil"
 )
 
-const ErrFmt = "%v %v:%v | %v"
+const ErrFmt = "%v %v:%v | %v\n"
 
-func Lex(name string, r io.ReadCloser) ([]Token, error) {
-	buf, err := ioutil.ReadAll(r)
-	if err != nil {
-		return nil, err
-	}
-
-	s := scanner.Scanner{}
-	fSet := token.NewFileSet()
-	file := fSet.AddFile(name, fSet.Base(), len(buf))
-	errChan, errHandler := ErrHandler()
-	s.Init(file, buf, errHandler, 0)
-
-	ret := []Token{}
-	pos := token.Pos(0)
-	tok := Token{}
-forloop:
-	for {
-		select {
-		case err = <-errChan:
-			return nil, err
-		default:
-			pos, tok.Token, tok.Literal = s.Scan()
-			if tok.Token == token.EOF {
-				break forloop
-			}
-			tok.Pos = fSet.Position(pos)
-			ret = append(ret, tok)
-		}
-	}
-	return ret, nil
+type Lexer struct {
+	s    scanner.Scanner
+	fSet *token.FileSet
 }
+
+func (l *Lexer) Init(name string, rc io.ReadCloser) error {
+	buf, err := ioutil.ReadAll(rc)
+	if err != nil {
+		return err
+	}
+
+	l.fSet = token.NewFileSet()
+	file := l.fSet.AddFile(name, l.fSet.Base(), len(buf))
+	l.s.Init(file, buf, ErrHandler, 0)
+	return nil
+}
+
+func (l *Lexer) Lex(lval *yySymType) int {
+	tok := Token{}
+	var pos token.Pos
+	pos, tok.Token, tok.Literal = l.s.Scan()
+	tok.Pos = l.fSet.Position(pos)
+	return int(tok.Token)
+}
+
+func (l *Lexer) Error(e string) { fmt.Println(e) }
 
 type Token struct {
 	Pos     token.Position
@@ -48,11 +43,8 @@ type Token struct {
 	Literal string
 }
 
-func ErrHandler() (<-chan error, scanner.ErrorHandler) {
-	c := make(chan error, 1)
-	eh := func(pos token.Position, msg string) {
-		// TODO: make this error message as close as possible to the go one
-		c <- fmt.Errorf(ErrFmt, pos.Filename, pos.Line, pos.Column, msg)
-	}
-	return c, eh
+func ErrHandler(pos token.Position, msg string) {
+	fmt.Printf(ErrFmt, pos.Filename, pos.Line, pos.Column, msg)
 }
+
+type yySymType struct{}
