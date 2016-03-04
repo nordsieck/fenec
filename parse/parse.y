@@ -13,6 +13,9 @@
 %left SHL SHR AND_NOT '&' '|' '^'
 %nonassoc '!'
 %nonassoc UMINUS
+%nonassoc VALOF
+%nonassoc ADDROF
+%nonassoc '(' ')'
 
 %token <i> IDENT INT FLOAT IMAG CHAR STRING
 
@@ -54,8 +57,10 @@ assignmentList: assignment ';' assignmentList {}
 
 assignment: identList '=' exprList {} ;
 
+// no trailing comma
 identList: identList ',' IDENT | IDENT
 
+// no trailing comma
 exprList: exprList ',' expr | expr
 
 stmt: IDENT INC ';' | IDENT DEC ';'
@@ -75,11 +80,14 @@ expr: val
 | expr '&' expr
 | expr '|' expr
 | expr '^' expr
+| '(' expr ')' {}
 ;
 
 val: IDENT | INT | FLOAT | IMAG | CHAR | STRING
 | '!' val {}
 | '-' val %prec UMINUS {}
+| '*' val %prec VALOF {}
+| '&' val %prec ADDROF {}
 ;
 
 
