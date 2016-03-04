@@ -37,6 +37,8 @@ root: PACKAGE IDENT ';'
 | IMPORT STRING ';'
 | CONST assignment ';'
 | CONST '(' assignmentList ')' ';'
+| VAR assignment ';'
+| VAR '(' assignmentList ')' ';'
 ;
 
 assignmentList: assignment ';' assignmentList {}

@@ -29,6 +29,15 @@ func TestYyParse(t *testing.T) {
 		`const ( a = 1 )`,
 		`const ( a = 1; )`,
 		`const ( a, b = 1, 2; c = "foo" )`,
+
+		// var
+		"var a = 1",
+		"var a, b = 1, 2",
+		`var a = "foo"`,
+		`var a, b = 1, "foo"`,
+		`var ( a = 1 )`,
+		`var ( a = 1; )`,
+		`var ( a, b = 1, 2; c = "foo" )`,
 	} {
 		fn(prog)
 	}
