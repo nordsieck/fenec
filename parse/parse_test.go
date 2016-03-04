@@ -42,6 +42,10 @@ func TestYyParse(t *testing.T) {
 		// comment
 		"// foo",
 		"/* bar */",
+
+		// ++/--
+		"a++",
+		"b--",
 	} {
 		fn(prog)
 	}

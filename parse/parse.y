@@ -28,6 +28,7 @@
 %token <i> SELECT STRUCT SWITCH TYPE VAR
 
 %type <i> root val expr exprList assignment assignmentList
+%type <i> stmt
 
 %%
 
@@ -40,6 +41,7 @@ root: PACKAGE IDENT ';'
 | CONST '(' assignmentList ')' ';'
 | VAR assignment ';'
 | VAR '(' assignmentList ')' ';'
+| stmt // here for convenience
 ;
 
 assignmentList: assignment ';' assignmentList {}
@@ -52,6 +54,9 @@ assignment: identList '=' exprList {} ;
 identList: identList ',' IDENT | IDENT
 
 exprList: exprList ',' expr | expr
+
+stmt: IDENT INC ';' | IDENT DEC ';'
+;
 
 expr: val
 | expr '+' expr
