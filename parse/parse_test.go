@@ -38,6 +38,10 @@ func TestYyParse(t *testing.T) {
 		`var ( a = 1 )`,
 		`var ( a = 1; )`,
 		`var ( a, b = 1, 2; c = "foo" )`,
+
+		// comment
+		"// foo",
+		"/* bar */",
 	} {
 		fn(prog)
 	}

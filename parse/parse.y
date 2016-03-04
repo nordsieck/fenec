@@ -34,6 +34,7 @@
 file: file root | root ;
 
 root: PACKAGE IDENT ';'
+| COMMENT
 | IMPORT STRING ';'
 | CONST assignment ';'
 | CONST '(' assignmentList ')' ';'
