@@ -17,15 +17,18 @@
 %token <i> IDENT INT FLOAT IMAG CHAR STRING
 
 %token <i> COMMENT
+%token <i> INC DEC
+%token <i> CONST VAR
+
 %token <i> ADD_ASSIGN SUB_ASSIGN MUL_ASSIGN QUO_ASSIGN REM_ASSIGN
 %token <i> AND_ASSIGN OR_ASSIGN XOR_ASSIGN SHL_ASSIGN SHR_ASSIGN AND_NOT_ASSIGN
-%token <i> ARROW INC DEC
+%token <i> ARROW
 %token <i> DEFINE ELLIPSIS
-%token <i> BREAK CASE CHAN CONST CONTINUE
+%token <i> BREAK CASE CHAN CONTINUE
 %token <i> DEFAULT DEFER ELSE FALLTHROUGH FOR
 %token <i> FUNC GO GOTO IF IMPORT
 %token <i> INTERFACE MAP PACKAGE RANGE RETURN
-%token <i> SELECT STRUCT SWITCH TYPE VAR
+%token <i> SELECT STRUCT SWITCH TYPE
 
 %type <i> root val expr exprList assignment assignmentList
 %type <i> stmt
@@ -41,7 +44,7 @@ root: PACKAGE IDENT ';'
 | CONST '(' assignmentList ')' ';'
 | VAR assignment ';'
 | VAR '(' assignmentList ')' ';'
-| stmt // here for convenience
+| stmt // TODO: fix this
 ;
 
 assignmentList: assignment ';' assignmentList {}
