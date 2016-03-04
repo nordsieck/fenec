@@ -18,10 +18,9 @@
 %nonassoc '(' ')'
 
 %token <i> IDENT INT FLOAT IMAG CHAR STRING
+%token <i> COMMENT INC DEC CONST MAP PACKAGE
 
-%token <i> COMMENT
-%token <i> INC DEC
-%token <i> CONST VAR
+%token <i> VAR FUNC
 
 %token <i> ADD_ASSIGN SUB_ASSIGN MUL_ASSIGN QUO_ASSIGN REM_ASSIGN
 %token <i> AND_ASSIGN OR_ASSIGN XOR_ASSIGN SHL_ASSIGN SHR_ASSIGN AND_NOT_ASSIGN
@@ -29,61 +28,100 @@
 %token <i> DEFINE ELLIPSIS
 %token <i> BREAK CASE CHAN CONTINUE
 %token <i> DEFAULT DEFER ELSE FALLTHROUGH FOR
-%token <i> FUNC GO GOTO IF IMPORT
-%token <i> INTERFACE MAP PACKAGE RANGE RETURN
+%token <i> GO GOTO IF IMPORT
+%token <i> INTERFACE RANGE RETURN
 %token <i> SELECT STRUCT SWITCH TYPE
 
 %type <i> root val expr exprList assignment assignmentList
-%type <i> stmt
+%type <i> stmt type fnReturn fnParams optSemi
+%type <i> paramList typeDecl paramDecl typeList fieldList
+%type <i> ifaceFuncSig ifaceFuncList
 
 %%
 
 file: file root | root ;
 
-root: PACKAGE IDENT ';'
-| COMMENT
-| IMPORT STRING ';'
-| CONST assignment ';'
-| CONST '(' assignmentList ')' ';'
-| VAR assignment ';'
-| VAR '(' assignmentList ')' ';'
-| stmt // TODO: fix this
+root: PACKAGE IDENT ';' {}
+| COMMENT {}
+| IMPORT STRING ';' {}
+| CONST assignment ';' {}
+| CONST assignments ';' {}
+| VAR assignment ';' {}
+| VAR assignments ';' {}
+| TYPE IDENT type ';' {}
+| STRUCT IDENT structFields ';' {}
+| stmt {} // TODO: fix this
 ;
 
-assignmentList: assignment ';' assignmentList {}
-| assignment ';' {}
-| assignment {}
+optSemi: ';' {} | {} ;
+optComma: ',' {} | {} ;
+
+assignments: '(' assignmentList optSemi ')' {} | '(' ')' {} ;
+
+assignmentList: assignmentList ';' assignment {} | assignment {} ;
+
+assignment: identList '=' exprList {}
+| identList type '=' exprList {}
+| identList type {}
 ;
 
-assignment: identList '=' exprList {} ;
+ifaceFuncSig: IDENT fnParams fnReturn {} | IDENT fnParams {} ;
 
-// no trailing comma
-identList: identList ',' IDENT | IDENT
+ifaceFuncList: ifaceFuncList ';' ifaceFuncSig {} | ifaceFuncSig {} ;
 
-// no trailing comma
-exprList: exprList ',' expr | expr
+ifaceMethods: '{' ifaceFuncList optSemi '}' {} | '{' '}' {} ;
 
-stmt: IDENT INC ';' | IDENT DEC ';'
+identList: identList ',' IDENT {} | IDENT {} ;
+
+exprList: exprList ',' expr {} | expr {} ;
+
+stmt: IDENT INC ';' {} | IDENT DEC ';' {} ;
+
+typeDecl: identList type {} ;
+
+typeList: typeList ',' typeDecl {} | typeDecl {} ;
+
+fieldList: fieldList ';' typeList {} | typeList
+
+structFields: '{' fieldList optSemi '}' {} | '{' '}' {} ;
+
+paramDecl: type {} | IDENT type {} | ELLIPSIS type {} | IDENT ELLIPSIS type {} ;
+
+paramList: paramList ',' paramDecl {} | paramDecl {} ;
+
+fnParams: '(' paramList optComma ')' {} | '(' ')' {} ;
+
+fnReturn: type {} | fnParams {} ;
+
+type: IDENT {}
+| '[' ']' type {}
+| '[' val ']' IDENT {}
+| MAP '[' type ']' type {}
+| FUNC fnParams fnReturn {}
+| FUNC fnParams {}
+| STRUCT structFields {}
+| INTERFACE ifaceMethods {}
+| '*' type {}
 ;
 
 expr: val
-| expr '+' expr
-| expr '-' expr
-| expr '*' expr
-| expr '/' expr
-| expr '%' expr
-| expr SHL expr
-| expr SHR expr
-| expr AND_NOT expr
-| expr LAND expr
-| expr LOR expr
-| expr '&' expr
-| expr '|' expr
-| expr '^' expr
+| expr '+' expr {}
+| expr '-' expr {}
+| expr '*' expr {}
+| expr '/' expr {}
+| expr '%' expr {}
+| expr SHL expr {}
+| expr SHR expr {}
+| expr AND_NOT expr {}
+| expr LAND expr {}
+| expr LOR expr {}
+| expr '&' expr {}
+| expr '|' expr {}
+| expr '^' expr {}
 | '(' expr ')' {}
 ;
 
-val: IDENT | INT | FLOAT | IMAG | CHAR | STRING
+val: IDENT {} | INT {} | FLOAT {} | IMAG {} | CHAR {} | STRING {}
 | '!' val {}
 | '-' val %prec UMINUS {}
 | '*' val %prec VALOF {}
