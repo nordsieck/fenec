@@ -128,7 +128,7 @@ func (l *Lexer) Init(name string, rc io.ReadCloser) error {
 
 	l.fSet = token.NewFileSet()
 	file := l.fSet.AddFile(name, l.fSet.Base(), len(buf))
-	l.s.Init(file, buf, ErrHandler, 0)
+	l.s.Init(file, buf, ErrHandler, scanner.ScanComments)
 	return nil
 }
 
