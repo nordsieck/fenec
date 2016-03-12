@@ -13,7 +13,7 @@ import (
 const (
 	ErrFmt = "%v %v:%v | %v\n"
 
-	EOF = 0 // requiretd by YACC
+	EOF = 0 // required by YACC
 )
 
 // examples taken from go/token
