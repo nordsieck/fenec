@@ -26,6 +26,8 @@ func TestYyParse(t *testing.T) {
 		// const
 		`const a = 1`,
 		`const a, b = 1, 2`,
+		`const ()`,
+		`const (a, b = 1, 2;)`,
 	} {
 		testFn(t, prog)
 	}

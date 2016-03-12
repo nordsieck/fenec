@@ -33,7 +33,7 @@ file: file root {} | root {} ;
 
 root: PACKAGE IDENT ';' {}
 | importDecl ';' {}
-| constDecl {}
+| constDecl ';' {}
 ;
 
 importDecl: IMPORT importSpec {}
@@ -43,9 +43,12 @@ importSpecList: importSpecList ';' importSpec {} | importSpec {} ;
 
 importSpec: STRING {} | '.' STRING {} | IDENT STRING {} ;
 
-constDecl: CONST assignment ';' {} ;
+constDecl: CONST assignment {}
+| CONST '(' assignmentList optSemi ')' {} | CONST '(' ')' {} ;
 
-assignment: identList '=' exprList {}
+assignmentList: assignmentList ';' assignment {} | assignment {} ;
+
+assignment: identList '=' exprList {} ;
 
 identList: identList ',' IDENT {} | IDENT {} ;
 
