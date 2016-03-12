@@ -13,7 +13,7 @@
 %nonassoc UMINUS
 
 %token <i> IDENT INT FLOAT IMAG CHAR STRING
-%token <i> IMPORT
+%token <i> IMPORT PACKAGE
 
 %token <i> COMMENT
 %token <i> SHL SHR AND_NOT
@@ -24,7 +24,7 @@
 %token <i> BREAK CASE CHAN CONST CONTINUE
 %token <i> DEFAULT DEFER ELSE FALLTHROUGH FOR
 %token <i> FUNC GO GOTO IF
-%token <i> INTERFACE MAP PACKAGE RANGE RETURN
+%token <i> INTERFACE MAP RANGE RETURN
 %token <i> SELECT STRUCT SWITCH TYPE VAR
 
 
@@ -32,7 +32,10 @@
 
 file: file root {} | root {} ;
 
-root: expr {} | import {} ;
+root: PACKAGE IDENT ';' {}
+| import {}
+| expr {}
+;
 
 import: IMPORT STRING ';' {} | IMPORT '(' stringList optSemi ')' ';' {} ;
 
