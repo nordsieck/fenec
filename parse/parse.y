@@ -11,7 +11,7 @@
 %left '+' '-'
 %left '*' '/' '%'
 %left '.'
-%nonassoc UMINUS
+%nonassoc UMINUS ARROW
 
 %token <i> IDENT INT FLOAT IMAG CHAR STRING
 %token <i> IMPORT PACKAGE
@@ -19,7 +19,7 @@
 %token <i> SHL SHR AND_NOT
 %token <i> ADD_ASSIGN SUB_ASSIGN MUL_ASSIGN QUO_ASSIGN REM_ASSIGN
 %token <i> AND_ASSIGN OR_ASSIGN XOR_ASSIGN SHL_ASSIGN SHR_ASSIGN AND_NOT_ASSIGN
-%token <i> LAND LOR ARROW INC DEC
+%token <i> LAND LOR INC DEC
 %token <i> DEFINE ELLIPSIS
 %token <i> BREAK CASE CHAN CONST CONTINUE
 %token <i> DEFAULT DEFER ELSE FALLTHROUGH FOR
@@ -58,13 +58,14 @@ typeSpecList: typeSpecList ';' typeSpec {} | typeSpec {} ;
 
 typeSpec: IDENT type {} ;
 
-type: typeName {} | typeLit {} ;
+type: typeName {} | typeLit {} | ARROW type {} ;
 
 typeName: IDENT {} | qualifiedIdent {} ;
 
 typeLit: '[' expr ']' type {}
 | '[' ']' type {}
 | MAP '[' type ']' type {}
+| CHAN type {}
 | '*' type {}
 ;
 

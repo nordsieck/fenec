@@ -32,6 +32,12 @@ func TestYyParse(t *testing.T) {
 		`type a []int`,
 		`type a *int`,
 		`type a map[int]int`,
+		`type a chan int`,
+		`type a <-chan int`,
+		`type a chan<- int`,
+		`type a chan<- chan int`,
+		`type a chan<- <-chan int`,
+		`type a <-chan <-chan int`,
 
 		// const
 		`const a = 1`,
