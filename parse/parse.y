@@ -58,9 +58,11 @@ typeSpecList: typeSpecList ';' typeSpec {} | typeSpec {} ;
 
 typeSpec: IDENT type {} ;
 
-type: typeName {} ;
+type: typeName {} | typeLit {} ;
 
 typeName: IDENT {} | qualifiedIdent {} ;
+
+typeLit: '[' expr ']' type {} ;
 
 qualifiedIdent: IDENT '.' IDENT {} ;
 

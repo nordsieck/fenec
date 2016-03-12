@@ -28,6 +28,7 @@ func TestYyParse(t *testing.T) {
 		`type a b.c`,
 		`type (a b;)`,
 		`type (a b.c;)`,
+		`type a [3]int`,
 
 		// const
 		`const a = 1`,
