@@ -18,8 +18,7 @@ const (
 
 // examples taken from go/token
 var t = map[token.Token]int{
-	token.EOF:     EOF,
-	token.COMMENT: COMMENT,
+	token.EOF: EOF,
 
 	token.IDENT:  IDENT,  // main
 	token.INT:    INT,    // 12345
