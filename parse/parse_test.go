@@ -22,6 +22,10 @@ func TestYyParse(t *testing.T) {
 		`import ("foo")`,
 		`import ("foo";)`,
 		`import (. "foo";)`,
+
+		// const
+		`const a = 1`,
+		`const a, b = 1, 2`,
 	} {
 		testFn(t, prog)
 	}
