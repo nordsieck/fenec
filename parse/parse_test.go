@@ -46,6 +46,13 @@ func TestYyParse(t *testing.T) {
 		`type a struct{b int}`,
 		`type a struct{b, c int}`,
 		`type a struct{b, c int "foo";}`,
+		`type a interface{}`,
+		`type a interface{b; c.d;}`,
+		`type a interface{b()}`,
+		`type a interface{b()();}`,
+		`type a interface{b(int,)}`,
+		`type a interface{b(i, j int)}`,
+		`type a interface{b(i ...int)}`,
 
 		// const
 		`const a = 1`,

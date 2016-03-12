@@ -65,8 +65,23 @@ typeLit: '[' expr ']' type {}
 | MAP '[' type ']' type {}
 | CHAN type {}
 | STRUCT '{' fieldDeclList optSemi '}' {} | STRUCT '{' '}' {}
+| INTERFACE '{' methodSpecList optSemi '}' {} | INTERFACE '{' '}' {}
 | '*' type {}
 ;
+
+methodSpecList: methodSpecList ';' methodSpec {} | methodSpec {} ;
+
+methodSpec: typeName {} | IDENT signature {} ;
+
+signature: parameters result {} | parameters {} ;
+
+result: parameters {} | type {} ;
+
+parameters: '(' paramList optComma  ')' {} | '(' ')' {} ;
+
+paramList: paramList ',' paramDecl {} | paramDecl {} ;
+
+paramDecl: IDENT type {} | type {} | IDENT ELLIPSIS type {} ;
 
 fieldDeclList: fieldDeclList ';' fieldDecl {} | fieldDecl {} ;
 
@@ -98,5 +113,6 @@ expr: expr '+' expr {}
 ;
 
 optSemi: {} | ';' {} ;
+optComma: {} | ',' {} ;
 
 %%
