@@ -60,14 +60,22 @@ typeSpec: IDENT type {} ;
 
 type: typeName {} | typeLit {} | ARROW type {} ;
 
-typeName: IDENT {} | qualifiedIdent {} ;
-
 typeLit: '[' expr ']' type {}
 | '[' ']' type {}
 | MAP '[' type ']' type {}
 | CHAN type {}
+| STRUCT '{' fieldDeclList optSemi '}' {} | STRUCT '{' '}' {}
 | '*' type {}
 ;
+
+fieldDeclList: fieldDeclList ';' fieldDecl {} | fieldDecl {} ;
+
+fieldDecl: identList type {} | identList type STRING {}
+| anonField {} | anonField STRING {} ;
+
+anonField: '*' typeName {} | typeName {} ;
+
+typeName: IDENT {} | qualifiedIdent {} ;
 
 qualifiedIdent: IDENT '.' IDENT {} ;
 

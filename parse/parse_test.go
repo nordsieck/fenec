@@ -38,6 +38,14 @@ func TestYyParse(t *testing.T) {
 		`type a chan<- chan int`,
 		`type a chan<- <-chan int`,
 		`type a <-chan <-chan int`,
+		`type a struct{}`,
+		`type a struct{b}`,
+		`type a struct{b;}`,
+		`type a struct{*b;}`,
+		`type a struct{*b "foo"}`,
+		`type a struct{b int}`,
+		`type a struct{b, c int}`,
+		`type a struct{b, c int "foo";}`,
 
 		// const
 		`const a = 1`,
