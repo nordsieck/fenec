@@ -10,6 +10,7 @@
 %nonassoc '!'
 %left '+' '-'
 %left '*' '/' '%'
+%left '.'
 %nonassoc UMINUS
 
 %token <i> IDENT INT FLOAT IMAG CHAR STRING
@@ -34,6 +35,7 @@ file: file root {} | root {} ;
 root: PACKAGE IDENT ';' {}
 | importDecl ';' {}
 | constDecl ';' {}
+| typeDecl ';' {}
 ;
 
 importDecl: IMPORT importSpec {}
@@ -49,6 +51,18 @@ constDecl: CONST assignment {}
 assignmentList: assignmentList ';' assignment {} | assignment {} ;
 
 assignment: identList '=' exprList {} ;
+
+typeDecl: TYPE typeSpec {} | TYPE '(' typeSpecList optSemi ')' {} ;
+
+typeSpecList: typeSpecList ';' typeSpec {} | typeSpec {} ;
+
+typeSpec: IDENT type {} ;
+
+type: typeName {} ;
+
+typeName: IDENT {} | qualifiedIdent {} ;
+
+qualifiedIdent: IDENT '.' IDENT {} ;
 
 identList: identList ',' IDENT {} | IDENT {} ;
 

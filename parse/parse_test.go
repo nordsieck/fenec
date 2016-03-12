@@ -23,6 +23,12 @@ func TestYyParse(t *testing.T) {
 		`import ("foo";)`,
 		`import (. "foo";)`,
 
+		// type
+		`type a b`,
+		`type a b.c`,
+		`type (a b;)`,
+		`type (a b.c;)`,
+
 		// const
 		`const a = 1`,
 		`const a, b = 1, 2`,
