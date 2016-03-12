@@ -10,6 +10,9 @@ import (
 
 func TestYyParse(t *testing.T) {
 	for _, prog := range []string{
+		// package
+		`package foo`,
+
 		// import
 		`import "foo"`,
 		`import ("foo")`,
