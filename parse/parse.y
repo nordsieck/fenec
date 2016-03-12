@@ -64,6 +64,7 @@ typeName: IDENT {} | qualifiedIdent {} ;
 
 typeLit: '[' expr ']' type {}
 | '[' ']' type {}
+| '*' type {}
 ;
 
 qualifiedIdent: IDENT '.' IDENT {} ;
