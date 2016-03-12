@@ -32,13 +32,16 @@
 file: file root {} | root {} ;
 
 root: PACKAGE IDENT ';' {}
-| import {}
+| importDecl ';' {}
 | expr {}
 ;
 
-import: IMPORT STRING ';' {} | IMPORT '(' stringList optSemi ')' ';' {} ;
+importDecl: IMPORT importSpec {}
+| IMPORT '(' ')' {} | IMPORT '(' importSpecList optSemi ')' {} ;
 
-stringList: stringList ',' STRING {} | STRING {} ;
+importSpecList: importSpecList ';' importSpec {} | importSpec {} ;
+
+importSpec: STRING {} | '.' STRING {} | IDENT STRING {} ;
 
 expr: expr '+' expr {}
 | expr '-' expr {}

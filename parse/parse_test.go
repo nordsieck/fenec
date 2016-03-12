@@ -15,8 +15,13 @@ func TestYyParse(t *testing.T) {
 
 		// import
 		`import "foo"`,
+		`import . "foo"`,
+		`import _ "foo"`,
+		`import f "foo"`,
+		`import ()`,
 		`import ("foo")`,
 		`import ("foo";)`,
+		`import (. "foo";)`,
 	} {
 		testFn(t, prog)
 	}
