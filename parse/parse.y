@@ -140,8 +140,11 @@ expr: expr '+' expr {}
 | expr GEQ expr {}
 | expr LEQ expr {}
 | expr NEQ expr {}
-| IDENT {} | INT {} | FLOAT {} | IMAG {} | CHAR {} | STRING {}
+| IDENT {}
+| basicLit {}
 ;
+
+basicLit: INT {} | FLOAT {} | IMAG {} | CHAR {} | STRING {} ;
 
 optSemi: {} | ';' {} ;
 optComma: {} | ',' {} ;

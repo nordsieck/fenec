@@ -115,6 +115,18 @@ func TestYyParse_Stmt(t *testing.T) {
 	}
 }
 
+func TestYyParse_Expr(t *testing.T) {
+	for _, expr := range []string{
+		`1`,
+		`1.1`,
+		`0i`,
+		`'a'`,
+		`"foo"`,
+	} {
+		testFn(t, `var a = `+expr)
+	}
+}
+
 func testFn(t *testing.T, prog string) {
 	ff := &testutil.FakeFile{Buffer: *bytes.NewBufferString(prog)}
 	l := &Lexer{}
