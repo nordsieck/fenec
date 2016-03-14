@@ -141,8 +141,12 @@ expr: expr '+' expr {}
 | expr LEQ expr {}
 | expr NEQ expr {}
 | IDENT {}
-| basicLit {}
+| literal {} ;
 ;
+
+literal: basicLit {} | fnLit {} ;
+
+fnLit: FUNC fn {} ;
 
 basicLit: INT {} | FLOAT {} | IMAG {} | CHAR {} | STRING {} ;
 

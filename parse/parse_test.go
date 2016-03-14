@@ -122,6 +122,7 @@ func TestYyParse_Expr(t *testing.T) {
 		`0i`,
 		`'a'`,
 		`"foo"`,
+		`func(){}`,
 	} {
 		testFn(t, `var a = `+expr)
 	}
