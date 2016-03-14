@@ -40,7 +40,12 @@ root: PACKAGE IDENT ';' {}
 | constDecl ';' {}
 | varDecl ';' {}
 | typeDecl ';' {}
+| fnDecl ';' {}
 ;
+
+fnDecl: FUNC IDENT fn {} ;
+
+fn: signature block ;
 
 importDecl: IMPORT importSpec {}
 | IMPORT '(' ')' {} | IMPORT '(' importSpecList optSemi ')' {} ;
@@ -111,6 +116,8 @@ typeName: IDENT {} | qualifiedIdent {} ;
 qualifiedIdent: IDENT '.' IDENT {} ;
 
 identList: identList ',' IDENT {} | IDENT {} ;
+
+block: '{' '}' {} ;
 
 exprList: exprList ',' expr {} | expr {} ;
 
