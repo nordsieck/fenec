@@ -37,11 +37,11 @@ file: file root {} | root {} ;
 
 root: PACKAGE IDENT ';' {}
 | importDecl ';' {}
-| constDecl ';' {}
-| varDecl ';' {}
-| typeDecl ';' {}
 | fnDecl ';' {}
+| declaration ';' {}
 ;
+
+declaration: constDecl {} | typeDecl {} | varDecl {} ;
 
 fnDecl: FUNC IDENT fn {} | FUNC receiver IDENT fn {} ;
 
@@ -119,7 +119,11 @@ qualifiedIdent: IDENT '.' IDENT {} ;
 
 identList: identList ',' IDENT {} | IDENT {} ;
 
-block: '{' '}' {} ;
+block: '{' '}' {} | '{' stmtList optSemi '}' {} ;
+
+stmtList: stmtList ';' stmt {} | stmt {} ;
+
+stmt: declaration {} ;
 
 exprList: exprList ',' expr {} | expr {} ;
 

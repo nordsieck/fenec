@@ -51,6 +51,7 @@ func TestYyParse(t *testing.T) {
 		`func a()(){}`,
 		`func a(int) int {}`,
 		`func a(i, j int, s string) (rune, err) {}`,
+		`func a(){ var b int }`,
 
 		// method
 		`func (a A) b(){}`,
@@ -95,6 +96,20 @@ func TestYyParse_Type(t *testing.T) {
 	} {
 		testFn(t, "type a "+typ)
 		testFn(t, "var a "+typ)
+	}
+}
+
+func TestYyParse_Stmt(t *testing.T) {
+	for _, stmt := range []string{
+		`var b, c int`,
+		`var b, c int = 1, 2`,
+		`const b, c int`,
+		`const b, c int = 1, 2`,
+		`type b int`,
+	} {
+		testFn(t, `func a(){
+`+stmt+`
+}`)
 	}
 }
 
