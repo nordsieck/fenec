@@ -53,6 +53,9 @@ func TestYyParse(t *testing.T) {
 		`type a interface{b(int,)}`,
 		`type a interface{b(i, j int)}`,
 		`type a interface{b(i ...int)}`,
+		`type a func()`,
+		`type a func()()`,
+		`type a func(i, j, k int) (int, int, int)`,
 
 		// const
 		`const a = 1`,

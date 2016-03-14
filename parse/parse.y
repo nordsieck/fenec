@@ -66,6 +66,7 @@ typeLit: '[' expr ']' type {}
 | CHAN type {}
 | STRUCT '{' fieldDeclList optSemi '}' {} | STRUCT '{' '}' {}
 | INTERFACE '{' methodSpecList optSemi '}' {} | INTERFACE '{' '}' {}
+| FUNC signature {}
 | '*' type {}
 ;
 
