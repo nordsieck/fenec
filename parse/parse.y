@@ -43,9 +43,11 @@ root: PACKAGE IDENT ';' {}
 | fnDecl ';' {}
 ;
 
-fnDecl: FUNC IDENT fn {} ;
+fnDecl: FUNC IDENT fn {} | FUNC receiver IDENT fn {} ;
 
-fn: signature block ;
+fn: signature block {} ;
+
+receiver: parameters {} ;
 
 importDecl: IMPORT importSpec {}
 | IMPORT '(' ')' {} | IMPORT '(' importSpecList optSemi ')' {} ;

@@ -51,6 +51,10 @@ func TestYyParse(t *testing.T) {
 		`func a()(){}`,
 		`func a(int) int {}`,
 		`func a(i, j int, s string) (rune, err) {}`,
+
+		// method
+		`func (a A) b(){}`,
+		`func (a *A) b(){}`,
 	} {
 		testFn(t, prog)
 	}
