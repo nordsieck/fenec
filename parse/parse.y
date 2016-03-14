@@ -37,11 +37,11 @@ file: file root {} | root {} ;
 
 root: PACKAGE IDENT ';' {}
 | importDecl ';' {}
-| constDecl ';' {}
-| varDecl ';' {}
-| typeDecl ';' {}
 | fnDecl ';' {}
+| declaration {}
 ;
+
+declaration: constDecl ';' {} | typeDecl ';' {} | varDecl ';' {} ;
 
 fnDecl: FUNC IDENT fn {} | FUNC receiver IDENT fn {} ;
 
