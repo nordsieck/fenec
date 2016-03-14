@@ -48,12 +48,14 @@ importSpecList: importSpecList ';' importSpec {} | importSpec {} ;
 
 importSpec: STRING {} | '.' STRING {} | IDENT STRING {} ;
 
-constDecl: CONST assignment {}
-| CONST '(' assignmentList optSemi ')' {} | CONST '(' ')' {} ;
+constDecl: CONST constSpec {}
+| CONST '(' constSpecList optSemi ')' {} | CONST '(' ')' {} ;
 
-assignmentList: assignmentList ';' assignment {} | assignment {} ;
+constSpecList: constSpecList ';' constSpec {} | constSpec {} ;
 
-assignment: identList '=' exprList {} ;
+constSpec: identList '=' exprList {}
+| identList type {}
+| identList type '=' exprList {} ;
 
 typeDecl: TYPE typeSpec {} | TYPE '(' typeSpecList optSemi ')' {} ;
 
