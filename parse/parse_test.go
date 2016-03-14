@@ -62,6 +62,9 @@ func TestYyParse(t *testing.T) {
 		`const a, b = 1, 2`,
 		`const ()`,
 		`const (a, b = 1, 2;)`,
+		`const a int`,
+		`const a, b int`,
+		`const (a, b int = 1, 2;)`,
 	} {
 		testFn(t, prog)
 	}

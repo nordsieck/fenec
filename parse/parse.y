@@ -53,7 +53,9 @@ constDecl: CONST constSpec {}
 
 constSpecList: constSpecList ';' constSpec {} | constSpec {} ;
 
-constSpec: identList '=' exprList {} ;
+constSpec: identList '=' exprList {}
+| identList type {}
+| identList type '=' exprList {} ;
 
 typeDecl: TYPE typeSpec {} | TYPE '(' typeSpecList optSemi ')' {} ;
 
