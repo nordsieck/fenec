@@ -25,37 +25,8 @@ func TestYyParse(t *testing.T) {
 
 		// type
 		`type a b`,
-		`type a b.c`,
 		`type (a b;)`,
 		`type (a b.c;)`,
-		`type a [3]int`,
-		`type a []int`,
-		`type a *int`,
-		`type a map[int]int`,
-		`type a chan int`,
-		`type a <-chan int`,
-		`type a chan<- int`,
-		`type a chan<- chan int`,
-		`type a chan<- <-chan int`,
-		`type a <-chan <-chan int`,
-		`type a struct{}`,
-		`type a struct{b}`,
-		`type a struct{b;}`,
-		`type a struct{*b;}`,
-		`type a struct{*b "foo"}`,
-		`type a struct{b int}`,
-		`type a struct{b, c int}`,
-		`type a struct{b, c int "foo";}`,
-		`type a interface{}`,
-		`type a interface{b; c.d;}`,
-		`type a interface{b()}`,
-		`type a interface{b()();}`,
-		`type a interface{b(int,)}`,
-		`type a interface{b(i, j int)}`,
-		`type a interface{b(i ...int)}`,
-		`type a func()`,
-		`type a func()()`,
-		`type a func(i, j, k int) (int, int, int)`,
 
 		// const
 		`const a = 1`,
@@ -65,8 +36,55 @@ func TestYyParse(t *testing.T) {
 		`const a int`,
 		`const a, b int`,
 		`const (a, b int = 1, 2;)`,
+
+		// var
+		`var a = 1`,
+		`var a, b = 1, 2`,
+		`var ()`,
+		`var (a, b = 1, 2;)`,
+		`var a int`,
+		`var a, b int`,
+		`var (a, b int = 1, 2;)`,
 	} {
 		testFn(t, prog)
+	}
+}
+
+func TestYyParse_Type(t *testing.T) {
+	for _, typ := range []string{
+		`b`,
+		`b.c`,
+		`[3]int`,
+		`[]int`,
+		`*int`,
+		`map[int]int`,
+		`chan int`,
+		`<-chan int`,
+		`chan<- int`,
+		`chan<- chan int`,
+		`chan<- <-chan int`,
+		`<-chan <-chan int`,
+		`struct{}`,
+		`struct{b}`,
+		`struct{b;}`,
+		`struct{*b;}`,
+		`struct{*b "foo"}`,
+		`struct{b int}`,
+		`struct{b, c int}`,
+		`struct{b, c int "foo";}`,
+		`interface{}`,
+		`interface{b; c.d;}`,
+		`interface{b()}`,
+		`interface{b()();}`,
+		`interface{b(int,)}`,
+		`interface{b(i, j int)}`,
+		`interface{b(i ...int)}`,
+		`func()`,
+		`func()()`,
+		`func(i, j, k int) (int, int, int)`,
+	} {
+		testFn(t, "type a "+typ)
+		testFn(t, "var a "+typ)
 	}
 }
 
