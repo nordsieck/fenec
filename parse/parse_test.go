@@ -106,6 +106,8 @@ func TestYyParse_Stmt(t *testing.T) {
 		`const b, c int`,
 		`const b, c int = 1, 2`,
 		`type b int`,
+		`;`,
+		`;;;`,
 	} {
 		testFn(t, `func a(){
 `+stmt+`
