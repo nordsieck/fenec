@@ -38,6 +38,7 @@ file: file root {} | root {} ;
 root: PACKAGE IDENT ';' {}
 | importDecl ';' {}
 | constDecl ';' {}
+| varDecl ';' {}
 | typeDecl ';' {}
 ;
 
@@ -47,6 +48,15 @@ importDecl: IMPORT importSpec {}
 importSpecList: importSpecList ';' importSpec {} | importSpec {} ;
 
 importSpec: STRING {} | '.' STRING {} | IDENT STRING {} ;
+
+varDecl: VAR varSpec {}
+| VAR '(' varSpecList optSemi ')' {} | VAR '(' ')' {} ;
+
+varSpecList: varSpecList ';' varSpec {} | varSpec {} ;
+
+varSpec: identList '=' exprList {}
+| identList type {}
+| identList type '=' exprList {} ;
 
 constDecl: CONST constSpec {}
 | CONST '(' constSpecList optSemi ')' {} | CONST '(' ')' {} ;
