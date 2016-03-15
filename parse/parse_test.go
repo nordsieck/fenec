@@ -123,6 +123,19 @@ func TestYyParse_Expr(t *testing.T) {
 		`'a'`,
 		`"foo"`,
 		`func(){}`,
+		`struct{}{}`,
+		`[1]int{}`,
+		`[...]int{}`,
+		`[]int{}`,
+		`map[int]int{}`,
+		`b{}`,
+		`b.c{}`,
+
+		`b{1}`,
+		`b{[]int{}}`,
+		`b{foo: 1}`,
+		`b{5-4: 6}`,
+		`map[[1]int]string{{2}: "foo"}`,
 	} {
 		testFn(t, `var a = `+expr)
 	}

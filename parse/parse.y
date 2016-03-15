@@ -82,12 +82,12 @@ typeSpec: IDENT type {} ;
 
 type: typeName {} | typeLit {} | ARROW type {} ;
 
-typeLit: '[' expr ']' type {}
-| '[' ']' type {}
-| MAP '[' type ']' type {}
+typeLit: arrayType {}
+| sliceType {}
+| mapType {}
 | CHAN type {}
-| STRUCT '{' fieldDeclList optSemi '}' {} | STRUCT '{' '}' {}
-| INTERFACE '{' methodSpecList optSemi '}' {} | INTERFACE '{' '}' {}
+| structType {}
+| interfaceType {}
 | FUNC signature {}
 | '*' type {}
 ;
@@ -144,9 +144,38 @@ expr: expr '+' expr {}
 | literal {} ;
 ;
 
-literal: basicLit {} | fnLit {} ;
+literal: basicLit {} | fnLit {} | compositeLiteral {} ;
 
 fnLit: FUNC fn {} ;
+
+compositeLiteral: literalType literalValue {} ;
+
+literalType: structType {}
+| arrayType {}
+| '[' ELLIPSIS ']' type {}
+| sliceType {}
+| mapType {}
+| typeName {} ;
+
+literalValue: '{' '}' {} | '{' elementList optComma '}' {} ;
+
+elementList: elementList ',' keyedElement {} | keyedElement {} ;
+
+keyedElement: key ':' element {} | element {} ;
+
+key: expr {} | literalValue {} ;
+
+element: expr {} | literalValue {} ;
+
+structType: STRUCT '{' fieldDeclList optSemi '}' {} | STRUCT '{' '}' {} ;
+
+arrayType: '[' expr ']' type {} ;
+
+sliceType: '[' ']' type {} ;
+
+mapType: MAP '[' type ']' type {} ;
+
+interfaceType: INTERFACE '{' methodSpecList optSemi '}' {} | INTERFACE '{' '}' {} ;
 
 basicLit: INT {} | FLOAT {} | IMAG {} | CHAR {} | STRING {} ;
 
