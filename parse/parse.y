@@ -142,7 +142,7 @@ expr: expr '+' expr {}
 | expr NEQ expr {}
 | operand {} ;
 
-operand: literal {} | typeName {} | methodExpr {} ;
+operand: literal {} | typeName {} | methodExpr {} | '(' expr ')' {} ;
 
 methodExpr: receiverType '.' IDENT {} ;
 
