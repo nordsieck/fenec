@@ -130,12 +130,13 @@ func TestYyParse_Expr(t *testing.T) {
 		`map[int]int{}`,
 		`b{}`,
 		`b.c{}`,
-
 		`b{1}`,
 		`b{[]int{}}`,
 		`b{foo: 1}`,
 		`b{5-4: 6}`,
 		`map[[1]int]string{{2}: "foo"}`,
+		`b`,
+		`b.c`,
 	} {
 		testFn(t, `var a = `+expr)
 	}

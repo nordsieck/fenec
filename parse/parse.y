@@ -140,9 +140,9 @@ expr: expr '+' expr {}
 | expr GEQ expr {}
 | expr LEQ expr {}
 | expr NEQ expr {}
-| IDENT {}
-| literal {} ;
-;
+| operand {} ;
+
+operand: literal {} | typeName {} ;
 
 literal: basicLit {} | fnLit {} | compositeLiteral {} ;
 
