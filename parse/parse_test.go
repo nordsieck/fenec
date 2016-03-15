@@ -137,6 +137,8 @@ func TestYyParse_Expr(t *testing.T) {
 		`map[[1]int]string{{2}: "foo"}`,
 		`b`,
 		`b.c`,
+		`(*b).c`,
+		`((*b)).c`,
 	} {
 		testFn(t, `var a = `+expr)
 	}

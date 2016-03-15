@@ -142,7 +142,11 @@ expr: expr '+' expr {}
 | expr NEQ expr {}
 | operand {} ;
 
-operand: literal {} | typeName {} ;
+operand: literal {} | typeName {} | methodExpr {} ;
+
+methodExpr: receiverType '.' IDENT {} ;
+
+receiverType: '(' '*' typeName ')' {} | '(' receiverType ')' {} ;
 
 literal: basicLit {} | fnLit {} | compositeLiteral {} ;
 
