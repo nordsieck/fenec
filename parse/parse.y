@@ -140,7 +140,9 @@ expr: expr '+' expr {}
 | expr GEQ expr {}
 | expr LEQ expr {}
 | expr NEQ expr {}
-| operand {} ;
+| primaryExpr {} ;
+
+primaryExpr: operand {} ;
 
 operand: literal {} | typeName {} | methodExpr {} | '(' expr ')' {} ;
 
