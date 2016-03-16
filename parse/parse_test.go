@@ -115,6 +115,36 @@ func TestYyParse_Stmt(t *testing.T) {
 	}
 }
 
+func TestYyParse_Expr(t *testing.T) {
+	for _, expr := range []string{
+		`1`,
+		`1.1`,
+		`0i`,
+		`'a'`,
+		`"foo"`,
+		`func(){}`,
+		`struct{}{}`,
+		`[1]int{}`,
+		`[...]int{}`,
+		`[]int{}`,
+		`map[int]int{}`,
+		`b{}`,
+		`b.c{}`,
+		`b{1}`,
+		`b{[]int{}}`,
+		`b{foo: 1}`,
+		`b{5-4: 6}`,
+		`map[[1]int]string{{2}: "foo"}`,
+		`b`,
+		`b.c`,
+		`(*b).c`,
+		`((*b)).c`,
+		`(1)`,
+	} {
+		testFn(t, `var a = `+expr)
+	}
+}
+
 func testFn(t *testing.T, prog string) {
 	ff := &testutil.FakeFile{Buffer: *bytes.NewBufferString(prog)}
 	l := &Lexer{}
