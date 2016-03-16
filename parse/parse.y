@@ -119,7 +119,7 @@ qualifiedIdent: IDENT '.' IDENT {} ;
 
 identList: identList ',' IDENT {} | IDENT {} ;
 
-// The optional semicolen is incorporated in stmtList
+// The optional semicolon is incorporated in stmtList
 block: '{' '}' {} | '{' stmtList '}' {} ;
 
 stmtList: stmtList ';' stmt {} | stmt {}
