@@ -4,7 +4,6 @@ go:
   - 1.6
 
 install:
-  - go generate ./...
   - go get -t ./...
   - go run main.go build # prep the ftest directory
   
