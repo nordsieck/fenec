@@ -20,6 +20,10 @@ package main
 // foo
 // bar
 `
+	simple = `package main
+
+func main() {}
+`
 	hello = `package main
 
 import "fmt"
@@ -71,6 +75,31 @@ func TestParseFile_Comments(t *testing.T) {
 		Name:     &ast.Ident{NamePos: 20, Name: "main"},
 		Scope:    &ast.Scope{Objects: map[string]*ast.Object{}},
 		Comments: []*ast.CommentGroup{top, next},
+	})
+}
+
+func TestParseFile_Simple(t *testing.T) {
+	fs := token.NewFileSet()
+	file, err := ParseFile(fs, "a.go", simple)
+	defect.Equal(t, err, nil)
+
+	block := &ast.BlockStmt{Lbrace: 27, Rbrace: 28}
+	obj := &ast.Object{Kind: ast.Fun, Name: "main", Decl: block}
+	fnDecl := &ast.FuncDecl{
+		Name: &ast.Ident{Name: "main", NamePos: 20, Obj: obj},
+		Type: &ast.FuncType{
+			Func:   15,
+			Params: &ast.FieldList{Opening: 24, Closing: 25},
+		},
+		Body: block,
+	}
+	obj.Decl = fnDecl
+
+	defect.DeepEqual(t, file.File, &ast.File{
+		Package: 1,
+		Name:    &ast.Ident{NamePos: 9, Name: "main"},
+		Decls:   []ast.Decl{fnDecl},
+		Scope:   &ast.Scope{Objects: map[string]*ast.Object{"main": obj}},
 	})
 }
 
