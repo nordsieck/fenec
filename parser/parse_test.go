@@ -84,7 +84,7 @@ func TestParseFile_Simple(t *testing.T) {
 	defect.Equal(t, err, nil)
 
 	block := &ast.BlockStmt{Lbrace: 27, Rbrace: 28}
-	obj := &ast.Object{Kind: ast.Fun, Name: "main", Decl: block}
+	obj := &ast.Object{Kind: ast.Fun, Name: "main"}
 	fnDecl := &ast.FuncDecl{
 		Name: &ast.Ident{Name: "main", NamePos: 20, Obj: obj},
 		Type: &ast.FuncType{
