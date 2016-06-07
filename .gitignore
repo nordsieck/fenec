@@ -29,4 +29,3 @@ _testmain.go
 # fenec
 *.fn.go
 *.output
-parse/parse.go
