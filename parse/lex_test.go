@@ -7,7 +7,7 @@ import (
 	"github.com/nordsieck/defect"
 )
 
-func TestScanner(t *testing.T) {
+func TestScanner_Scan(t *testing.T) {
 	s := Scanner{}
 
 	expected := map[string][]token.Token{
@@ -36,5 +36,24 @@ func main(){
 			_, tok, _ = s.Scan()
 			i++
 		}
+	}
+}
+
+func TestScanner_Peek(t *testing.T) {
+	s := Scanner{}
+	s.Init([]byte(`package main
+
+func main(){}
+`))
+
+	expected := []token.Token{
+		token.PACKAGE, token.IDENT, token.SEMICOLON,
+		token.FUNC, token.IDENT, token.LPAREN, token.RPAREN, token.LBRACE, token.RBRACE, token.SEMICOLON,
+	}
+
+	for _, e := range expected {
+		_, tok, _ := s.Peek()
+		defect.Equal(t, tok, e)
+		s.Scan()
 	}
 }
