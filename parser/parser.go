@@ -747,6 +747,12 @@ func (p *parser) parseStructType() *ast.StructType {
 	}
 
 	pos := p.expect(token.STRUCT)
+
+	if p.tok == token.LBRACK {
+		p.expect(token.LBRACK)
+		p.expect(token.RBRACK)
+	}
+
 	lbrace := p.expect(token.LBRACE)
 	scope := ast.NewScope(nil) // struct scope
 	var list []*ast.Field
@@ -906,6 +912,10 @@ func (p *parser) parseSignature(scope *ast.Scope) (params, results *ast.FieldLis
 		defer un(trace(p, "Signature"))
 	}
 
+	if p.tok == token.LBRACK {
+		p.expect(token.LBRACK)
+		p.expect(token.RBRACK)
+	}
 	params = p.parseParameters(scope, true)
 	results = p.parseResult(scope)
 
