@@ -23,7 +23,6 @@
 package parser
 
 import (
-	goParser "go/parser"
 	"go/scanner"
 	"go/token"
 	"io/ioutil"
@@ -152,7 +151,7 @@ func checkErrors(t *testing.T, filename string, input interface{}) {
 	}
 
 	fset := token.NewFileSet()
-	_, err = ParseFile(fset, filename, src, goParser.DeclarationErrors|goParser.AllErrors)
+	_, err = ParseFile(fset, filename, src, DeclarationErrors|AllErrors)
 	found, ok := err.(scanner.ErrorList)
 	if err != nil && !ok {
 		t.Error(err)
