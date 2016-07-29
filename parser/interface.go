@@ -10,7 +10,6 @@ import (
 	"bytes"
 	"errors"
 	"go/ast"
-	goParser "go/parser"
 	"go/token"
 	"io"
 	"io/ioutil"
@@ -82,7 +81,7 @@ const (
 // representing the fragments of erroneous source code). Multiple errors
 // are returned via a scanner.ErrorList which is sorted by file position.
 //
-func ParseFile(fset *token.FileSet, filename string, src interface{}, mode goParser.Mode) (f *ast.File, err error) {
+func ParseFile(fset *token.FileSet, filename string, src interface{}, mode Mode) (f *ast.File, err error) {
 	// get source
 	text, err := readSource(filename, src)
 	if err != nil {
@@ -132,7 +131,7 @@ func ParseFile(fset *token.FileSet, filename string, src interface{}, mode goPar
 // returned. If a parse error occurred, a non-nil but incomplete map and the
 // first error encountered are returned.
 //
-func ParseDir(fset *token.FileSet, path string, filter func(os.FileInfo) bool, mode goParser.Mode) (pkgs map[string]*ast.Package, first error) {
+func ParseDir(fset *token.FileSet, path string, filter func(os.FileInfo) bool, mode Mode) (pkgs map[string]*ast.Package, first error) {
 	fd, err := os.Open(path)
 	if err != nil {
 		return nil, err
@@ -172,7 +171,7 @@ func ParseDir(fset *token.FileSet, path string, filter func(os.FileInfo) bool, m
 // The arguments have the same meaning as for Parse, but the source must
 // be a valid Go (type or value) expression.
 //
-func ParseExprFrom(fset *token.FileSet, filename string, src interface{}, mode goParser.Mode) (ast.Expr, error) {
+func ParseExprFrom(fset *token.FileSet, filename string, src interface{}, mode Mode) (ast.Expr, error) {
 	// get source
 	text, err := readSource(filename, src)
 	if err != nil {

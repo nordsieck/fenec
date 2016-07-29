@@ -19,7 +19,6 @@ package parser
 import (
 	"fmt"
 	"go/ast"
-	goParser "go/parser"
 	"go/scanner"
 	"go/token"
 	"strconv"
@@ -34,9 +33,9 @@ type parser struct {
 	scanner scanner.Scanner
 
 	// Tracing/debugging
-	mode   goParser.Mode // parsing mode
-	trace  bool          // == (mode & Trace != 0)
-	indent int           // indentation used for tracing output
+	mode   Mode // parsing mode
+	trace  bool // == (mode & Trace != 0)
+	indent int  // indentation used for tracing output
 
 	// Comments
 	comments    []*ast.CommentGroup
@@ -71,17 +70,17 @@ type parser struct {
 	targetStack [][]*ast.Ident // stack of unresolved labels
 }
 
-func (p *parser) init(fset *token.FileSet, filename string, src []byte, mode goParser.Mode) {
+func (p *parser) init(fset *token.FileSet, filename string, src []byte, mode Mode) {
 	p.file = fset.AddFile(filename, -1, len(src))
 	var m scanner.Mode
-	if mode&goParser.ParseComments != 0 {
+	if mode&ParseComments != 0 {
 		m = scanner.ScanComments
 	}
 	eh := func(pos token.Position, msg string) { p.errors.Add(pos, msg) }
 	p.scanner.Init(p.file, src, eh, m)
 
 	p.mode = mode
-	p.trace = mode&goParser.Trace != 0 // for convenience (p.trace is used frequently)
+	p.trace = mode&Trace != 0 // for convenience (p.trace is used frequently)
 
 	p.next()
 }
@@ -108,7 +107,7 @@ func (p *parser) closeLabelScope() {
 	scope := p.labelScope
 	for _, ident := range p.targetStack[n] {
 		ident.Obj = scope.Lookup(ident.Name)
-		if ident.Obj == nil && p.mode&goParser.DeclarationErrors != 0 {
+		if ident.Obj == nil && p.mode&DeclarationErrors != 0 {
 			p.error(ident.Pos(), fmt.Sprintf("label %s undefined", ident.Name))
 		}
 	}
@@ -127,7 +126,7 @@ func (p *parser) declare(decl, data interface{}, scope *ast.Scope, kind ast.ObjK
 		obj.Data = data
 		ident.Obj = obj
 		if ident.Name != "_" {
-			if alt := scope.Insert(obj); alt != nil && p.mode&goParser.DeclarationErrors != 0 {
+			if alt := scope.Insert(obj); alt != nil && p.mode&DeclarationErrors != 0 {
 				prevDecl := ""
 				if pos := alt.Pos(); pos.IsValid() {
 					prevDecl = fmt.Sprintf("\n\tprevious declaration at %s", p.file.Position(pos))
@@ -161,7 +160,7 @@ func (p *parser) shortVarDecl(decl *ast.AssignStmt, list []ast.Expr) {
 			p.errorExpected(x.Pos(), "identifier on left side of :=")
 		}
 	}
-	if n == 0 && p.mode&goParser.DeclarationErrors != 0 {
+	if n == 0 && p.mode&DeclarationErrors != 0 {
 		p.error(list[0].Pos(), "no new variables on left side of :=")
 	}
 }
@@ -358,7 +357,7 @@ func (p *parser) error(pos token.Pos, msg string) {
 	// If AllErrors is not set, discard errors reported on the same line
 	// as the last recorded error and stop parsing if there are more than
 	// 10 errors.
-	if p.mode&goParser.AllErrors == 0 {
+	if p.mode&AllErrors == 0 {
 		n := len(p.errors)
 		if n > 0 && p.errors[n-1].Pos.Line == epos.Line {
 			return // discard - likely a spurious error
@@ -2467,7 +2466,7 @@ func (p *parser) parseFile() *ast.File {
 	// Go spec: The package clause is not a declaration;
 	// the package name does not appear in any scope.
 	ident := p.parseIdent()
-	if ident.Name == "_" && p.mode&goParser.DeclarationErrors != 0 {
+	if ident.Name == "_" && p.mode&DeclarationErrors != 0 {
 		p.error(p.pos, "invalid package name _")
 	}
 	p.expectSemi()
@@ -2481,13 +2480,13 @@ func (p *parser) parseFile() *ast.File {
 	p.openScope()
 	p.pkgScope = p.topScope
 	var decls []ast.Decl
-	if p.mode&goParser.PackageClauseOnly == 0 {
+	if p.mode&PackageClauseOnly == 0 {
 		// import decls
 		for p.tok == token.IMPORT {
 			decls = append(decls, p.parseGenDecl(token.IMPORT, p.parseImportSpec))
 		}
 
-		if p.mode&goParser.ImportsOnly == 0 {
+		if p.mode&ImportsOnly == 0 {
 			// rest of package body
 			for p.tok != token.EOF {
 				decls = append(decls, p.parseDecl(syncDecl))
