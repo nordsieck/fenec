@@ -8,7 +8,6 @@ import (
 	"bytes"
 	"fmt"
 	"go/ast"
-	goParser "go/parser"
 	"go/token"
 	"os"
 	"strings"
@@ -24,7 +23,7 @@ var validFiles = []string{
 
 func TestParse(t *testing.T) {
 	for _, filename := range validFiles {
-		_, err := goParser.ParseFile(token.NewFileSet(), filename, nil, goParser.DeclarationErrors)
+		_, err := ParseFile(token.NewFileSet(), filename, nil, DeclarationErrors)
 		if err != nil {
 			t.Fatalf("ParseFile(%s): %v", filename, err)
 		}
@@ -45,7 +44,7 @@ func dirFilter(f os.FileInfo) bool { return nameFilter(f.Name()) }
 
 func TestParseDir(t *testing.T) {
 	path := "."
-	pkgs, err := goParser.ParseDir(token.NewFileSet(), path, dirFilter, 0)
+	pkgs, err := ParseDir(token.NewFileSet(), path, dirFilter, 0)
 	if err != nil {
 		t.Fatalf("ParseDir(%s): %v", path, err)
 	}
@@ -71,7 +70,7 @@ func TestParseExpr(t *testing.T) {
 	// just kicking the tires:
 	// a valid arithmetic expression
 	src := "a + b"
-	x, err := goParser.ParseExpr(src)
+	x, err := ParseExpr(src)
 	if err != nil {
 		t.Errorf("ParseExpr(%q): %v", src, err)
 	}
@@ -82,7 +81,7 @@ func TestParseExpr(t *testing.T) {
 
 	// a valid type expression
 	src = "struct{x *int}"
-	x, err = goParser.ParseExpr(src)
+	x, err = ParseExpr(src)
 	if err != nil {
 		t.Errorf("ParseExpr(%q): %v", src, err)
 	}
@@ -93,23 +92,23 @@ func TestParseExpr(t *testing.T) {
 
 	// an invalid expression
 	src = "a + *"
-	if _, err := goParser.ParseExpr(src); err == nil {
+	if _, err := ParseExpr(src); err == nil {
 		t.Errorf("ParseExpr(%q): got no error", src)
 	}
 
 	// a valid expression followed by extra tokens is invalid
 	src = "a[i] := x"
-	if _, err := goParser.ParseExpr(src); err == nil {
+	if _, err := ParseExpr(src); err == nil {
 		t.Errorf("ParseExpr(%q): got no error", src)
 	}
 
 	// a semicolon is not permitted unless automatically inserted
 	src = "a + b\n"
-	if _, err := goParser.ParseExpr(src); err != nil {
+	if _, err := ParseExpr(src); err != nil {
 		t.Errorf("ParseExpr(%q): got error %s", src, err)
 	}
 	src = "a + b;"
-	if _, err := goParser.ParseExpr(src); err == nil {
+	if _, err := ParseExpr(src); err == nil {
 		t.Errorf("ParseExpr(%q): got no error", src)
 	}
 
@@ -118,19 +117,19 @@ func TestParseExpr(t *testing.T) {
 	const anything = "dh3*#D)#_"
 	for _, c := range "!)]};," {
 		src := validExpr + string(c) + anything
-		if _, err := goParser.ParseExpr(src); err == nil {
+		if _, err := ParseExpr(src); err == nil {
 			t.Errorf("ParseExpr(%q): got no error", src)
 		}
 	}
 
 	// ParseExpr must not crash
 	for _, src := range valids {
-		goParser.ParseExpr(src)
+		ParseExpr(src)
 	}
 }
 
 func TestColonEqualsScope(t *testing.T) {
-	f, err := goParser.ParseFile(token.NewFileSet(), "", `package p; func f() { x, y, z := x, y, z }`, 0)
+	f, err := ParseFile(token.NewFileSet(), "", `package p; func f() { x, y, z := x, y, z }`, 0)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -152,7 +151,7 @@ func TestColonEqualsScope(t *testing.T) {
 }
 
 func TestVarScope(t *testing.T) {
-	f, err := goParser.ParseFile(token.NewFileSet(), "", `package p; func f() { var x, y, z = x, y, z }`, 0)
+	f, err := ParseFile(token.NewFileSet(), "", `package p; func f() { var x, y, z = x, y, z }`, 0)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -182,7 +181,7 @@ var x int
 func f() { L: }
 `
 
-	f, err := goParser.ParseFile(token.NewFileSet(), "", src, 0)
+	f, err := ParseFile(token.NewFileSet(), "", src, 0)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -220,7 +219,7 @@ func f() { L: }
 }
 
 func TestUnresolved(t *testing.T) {
-	f, err := goParser.ParseFile(token.NewFileSet(), "", `
+	f, err := ParseFile(token.NewFileSet(), "", `
 package p
 //
 func f1a(int)
@@ -315,7 +314,7 @@ var imports = map[string]bool{
 func TestImports(t *testing.T) {
 	for path, isValid := range imports {
 		src := fmt.Sprintf("package p; import %s", path)
-		_, err := goParser.ParseFile(token.NewFileSet(), "", src, 0)
+		_, err := ParseFile(token.NewFileSet(), "", src, 0)
 		switch {
 		case err != nil && isValid:
 			t.Errorf("ParseFile(%s): got %v; expected no error", src, err)
@@ -326,7 +325,7 @@ func TestImports(t *testing.T) {
 }
 
 func TestCommentGroups(t *testing.T) {
-	f, err := goParser.ParseFile(token.NewFileSet(), "", `
+	f, err := ParseFile(token.NewFileSet(), "", `
 package p /* 1a */ /* 1b */      /* 1c */ // 1d
 /* 2a
 */
@@ -343,7 +342,7 @@ func ExampleCount() {
 	// 3
 	// 5
 }
-`, goParser.ParseComments)
+`, ParseComments)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -420,7 +419,7 @@ func checkFieldComments(t *testing.T, file *ast.File, fieldname, lead, line stri
 }
 
 func TestLeadAndLineComments(t *testing.T) {
-	f, err := goParser.ParseFile(token.NewFileSet(), "", `
+	f, err := ParseFile(token.NewFileSet(), "", `
 package p
 type T struct {
 	/* F1 lead comment */
@@ -432,7 +431,7 @@ type T struct {
 	// f3 lead comment
 	f3 int  // f3 line comment
 }
-`, goParser.ParseComments)
+`, ParseComments)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -462,7 +461,7 @@ func TestIssue9979(t *testing.T) {
 		"package p; func f() { L: \n; }",
 	} {
 		fset := token.NewFileSet()
-		f, err := goParser.ParseFile(fset, "", src, 0)
+		f, err := ParseFile(fset, "", src, 0)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -503,7 +502,7 @@ func TestIncompleteSelection(t *testing.T) {
 		"package p; var _ = fmt.\ntype X int", // not at EOF
 	} {
 		fset := token.NewFileSet()
-		f, err := goParser.ParseFile(fset, "", src, 0)
+		f, err := ParseFile(fset, "", src, 0)
 		if err == nil {
 			t.Errorf("ParseFile(%s) succeeded unexpectedly", src)
 			continue
